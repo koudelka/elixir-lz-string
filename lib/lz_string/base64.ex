@@ -20,7 +20,7 @@ defmodule LZString.Base64 do
       end
 
       @doc ~S"""
-      Decompresses the given binary after decoding lz-string's non-standard base64.
+      Decompresses the given string after decoding lz-string's non-standard base64.
 
           iex> LZString.decompress_base64("BYUwNmD2A0AECWsCGBbZtDUzkA==")
           "hello, i am a 猫"
@@ -55,7 +55,7 @@ defmodule LZString.Base64 do
       end
 
       @doc ~S"""
-      Decompresses the given "uri encoded" base64 compressed binary.
+      Decompresses the given "uri encoded" base64 compressed string.
 
       iex> LZString.decompress_uri_encoded("BYUwNmD2A0AECWsCGBbZtDUzkAA$")
       "hello, i am a 猫"

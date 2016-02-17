@@ -121,7 +121,7 @@ defmodule LZString do
     end
   end
 
-  def decompress_sequence(w, s, dict) do
+  defp decompress_sequence(w, s, dict) do
     case Map.fetch(dict, s) do
       {:ok, seq} -> seq
       :error ->
@@ -129,9 +129,9 @@ defmodule LZString do
         w <> String.first(w)
     end
   end
-  def decompress_sequence(s, _dict), do: s
+  defp decompress_sequence(s, _dict), do: s
 
-  def decode_next_segment(str, dict) do
+  defp decode_next_segment(str, dict) do
     size = dict |> map_size |> num_bits
     << dict_entry :: size(size), rest :: bitstring >> = str
     # dict_entry is in LSB format, bring it back to MSB
@@ -158,8 +158,8 @@ defmodule LZString do
   end
 
 
-  def num_bits(0), do: 1
-  def num_bits(int) do
+  defp num_bits(0), do: 1
+  defp num_bits(int) do
     int
     |> :math.log2
     |> trunc
@@ -167,8 +167,8 @@ defmodule LZString do
   end
 
   # http://erlang.org/euc/07/papers/1700Gustafsson.pdf
-  def reverse(<<>>), do: <<>>
-  def reverse(<< bit :: size(1), rest :: bitstring >>) do
+  defp reverse(<<>>), do: <<>>
+  defp reverse(<< bit :: size(1), rest :: bitstring >>) do
     << reverse(rest) :: bitstring, bit :: size(1) >>
   end
 
