@@ -26,12 +26,19 @@ defmodule LZString.Base64 do
           "hello, i am a 猫"
       """
       def decompress_base64(str) do
-        str |> do_decompress_base64 |> decompress
+        str |> decode_base64 |> decompress
       end
 
-      defp do_decompress_base64(""), do: ""
-      defp do_decompress_base64(<< c :: utf8 >> <> rest) do
-        << LZString.Base64.base64_to_bitstring(c) :: bitstring, do_decompress_base64(rest) :: bitstring >>
+
+      @doc ~S"""
+      Decodes the given "base64" string, giving a naked lz-string bitstring.
+
+      iex> LZString.decode_base64("BYUwNmD2A0AECWsCGBbZtDUzkA==")
+      <<5, 133, 48, 54, 96, 246, 3, 64, 4, 9, 107, 2, 24, 22, 217, 180, 53, 51, 144, 0, 0>>
+      """
+      def decode_base64(""), do: ""
+      def decode_base64(<< c :: utf8 >> <> rest) do
+        << LZString.Base64.base64_to_bitstring(c) :: bitstring, decode_base64(rest) :: bitstring >>
       end
 
       @doc ~S"""
@@ -58,6 +65,19 @@ defmodule LZString.Base64 do
         |> String.replace("-", "/")
         |> String.replace("$", "=")
         |> decompress_base64
+      end
+
+      @doc ~S"""
+      Decodes the given "uri encoded" base64 string, giving a naked lz-string bitstring.
+
+      iex> LZString.decode_uri_encoded("BYUwNmD2A0AECWsCGBbZtDUzkA$$")
+      <<5, 133, 48, 54, 96, 246, 3, 64, 4, 9, 107, 2, 24, 22, 217, 180, 53, 51, 144, 0, 0>>
+      """
+      def decode_uri_encoded(str) do
+        str
+        |> String.replace("-", "/")
+        |> String.replace("$", "=")
+        |> decode_base64
       end
 
     end
