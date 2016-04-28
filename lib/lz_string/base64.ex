@@ -36,9 +36,10 @@ defmodule LZString.Base64 do
       iex> LZString.decode_base64("BYUwNmD2A0AECWsCGBbZtDUzkA==")
       <<5, 133, 48, 54, 96, 246, 3, 64, 4, 9, 107, 2, 24, 22, 217, 180, 53, 51, 144, 0, 0>>
       """
-      def decode_base64(""), do: ""
-      def decode_base64(<< c :: utf8 >> <> rest) do
-        << LZString.Base64.base64_to_bitstring(c) :: bitstring, decode_base64(rest) :: bitstring >>
+      def decode_base64(str) do
+        for << c :: utf8 <- str >>, into: <<>> do
+          LZString.Base64.base64_to_bitstring(c)
+        end
       end
 
       @doc ~S"""
