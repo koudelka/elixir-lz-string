@@ -108,28 +108,22 @@ defmodule LZString do
   end
 
   def decompress(w, str, dict) do
-    w_str = decompress_sequence(w, dict)
     case decode_next_segment(str, dict) do
       {:char, c, rest, dict} ->
-        dict = Map.put(dict, map_size(dict), w_str <> String.first(c))
-        [w_str | decompress(c, rest, dict)]
+        dict = Map.put(dict, map_size(dict), w <> String.first(c))
+        [w | decompress(c, rest, dict)]
       {:seq, seq, rest} ->
-        c = decompress_sequence(w_str, seq, dict)
-        dict = Map.put(dict, map_size(dict), w_str <> String.first(c))
-        [w_str | decompress(c, rest, dict)]
-      :eof -> [w_str]
+        c = case Map.fetch(dict, seq) do
+              {:ok, decompressed} -> decompressed
+              :error ->
+                unless map_size(dict) == seq, do: raise "unknown sequence index #{seq}"
+                w <> String.first(w)
+            end
+        dict = Map.put(dict, map_size(dict), w <> String.first(c))
+        [w | decompress(c, rest, dict)]
+      :eof -> [w]
     end
   end
-
-  defp decompress_sequence(w, s, dict) do
-    case Map.fetch(dict, s) do
-      {:ok, seq} -> seq
-      :error ->
-        unless map_size(dict) == s, do: raise "unknown sequence index #{s}"
-        w <> String.first(w)
-    end
-  end
-  defp decompress_sequence(s, _dict), do: s
 
   defp decode_next_segment(str, dict) do
     size = dict |> map_size |> num_bits
