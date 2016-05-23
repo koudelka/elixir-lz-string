@@ -48,13 +48,11 @@ defmodule LZString do
 
     wc = w <> c
     if Map.has_key?(dict, wc) do
-      w = wc
-      compress(w, rest, dict)
+      compress(wc, rest, dict)
     else
       {dict, output} = w_output(w, dict, char_just_added)
       dict = Map.put(dict, wc, map_size(dict))
-      w = c
-      [output | compress(w, rest, dict)]
+      [output | compress(c, rest, dict)]
     end
   end
 
@@ -104,22 +102,22 @@ defmodule LZString do
   def decompress(""), do: ""
   def decompress(str) do
     {:char, c, rest, dict} = decode_next_segment(str, @decompress_dict)
-    decompress(c, rest, dict) |> :erlang.list_to_binary
+    decompress(c, rest, dict) |> :erlang.list_to_binary |> :unicode.characters_to_binary(:utf16)
   end
 
   def decompress(w, str, dict) do
     case decode_next_segment(str, dict) do
       {:char, c, rest, dict} ->
-        dict = Map.put(dict, map_size(dict), w <> String.first(c))
+        dict = Map.put(dict, map_size(dict), w <> c)
         [w | decompress(c, rest, dict)]
       {:seq, seq, rest} ->
         c = case Map.fetch(dict, seq) do
               {:ok, decompressed} -> decompressed
               :error ->
                 unless map_size(dict) == seq, do: raise "unknown sequence index #{seq}"
-                w <> String.first(w)
+                w <> first_utf16(w)
             end
-        dict = Map.put(dict, map_size(dict), w <> String.first(c))
+        dict = Map.put(dict, map_size(dict), w <> first_utf16(c))
         [w | decompress(c, rest, dict)]
       :eof -> [w]
     end
@@ -135,22 +133,25 @@ defmodule LZString do
       @size_8 ->
         << c :: size(8), rest :: bitstring >> = rest
         << c :: size(8) >> = reverse(<< c :: size(8)>>)
-        char = << c :: utf8 >>
+        char = << c :: utf16 >>
         dict = Map.put(dict, map_size(dict), char)
         {:char, char, rest, dict}
       @size_16 ->
         << c :: size(16), rest :: bitstring >> = rest
         << c :: size(16) >> = reverse(<< c :: size(16)>>)
-        char = << c :: utf8 >>
+        char = << c :: 16 >>
         dict = Map.put(dict, map_size(dict), char)
         {:char, char, rest, dict}
       @eof ->
         :eof
-      sequence ->
-        {:seq, sequence, rest}
+      index ->
+        {:seq, index, rest}
     end
   end
 
+  defp first_utf16(<< c :: 16 >> <> _) do
+    << c :: 16 >>
+  end
 
   defp num_bits(0), do: 1
   defp num_bits(int) do

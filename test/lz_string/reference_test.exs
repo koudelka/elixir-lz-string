@@ -24,7 +24,6 @@ defmodule LzStringTest.Reference.Test do
     Enum.each 1..2000, &(assert_same_as_node_compress String.ljust("", &1, ?猫), port)
   end
 
-
   # compress using node, and decompress using elixir
 
   test "decompress/1 should be able to decompress random strings from the reference implementation's compressToUint8Array/1", %{port: port} do
@@ -41,6 +40,12 @@ defmodule LzStringTest.Reference.Test do
     str = "今日は 今日は 今日は 今日は 今日は 今日は"
     assert str == compress_to_binary_with_node(port, str) |> decompress
   end
+
+  test "decompress/1 should be able to handle utf-16 characters with surrogate pairs", %{port: port} do
+    str = "abc💔abc"
+    assert str == compress_to_binary_with_node(port, str) |> decompress
+  end
+
 
   # compress to lz-string pseudo-base64 using node, and decompress using elixir
 
