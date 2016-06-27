@@ -40,11 +40,13 @@ defmodule LZString do
   def compress(w, << c :: utf8 >> <> rest, dict) do
     c = << c :: utf8 >>
 
-    char_just_added = false
-    if !Map.has_key?(dict, c) do
-      char_just_added = true
-      dict = Map.put(dict, c, {:first_time, map_size(dict)})
-    end
+    char_just_added = !Map.has_key?(dict, c)
+    dict =
+      if char_just_added do
+        Map.put(dict, c, {:first_time, map_size(dict)})
+      else
+        dict
+      end
 
     wc = w <> c
     if Map.has_key?(dict, wc) do
@@ -82,9 +84,12 @@ defmodule LZString do
         map_size = map_size(dict) - 1
         # a char just being added to the dict may cause us to add an extra bit
         # to the dict_index output where one isn't strictly needed yet
-        if char_just_added do
-          map_size = map_size - 1
-        end
+        map_size =
+          if char_just_added do
+            map_size - 1
+          else
+            map_size
+          end
         size = num_bits(map_size)
         {dict, reverse(<< dict_index :: size(size) >>)}
     end
