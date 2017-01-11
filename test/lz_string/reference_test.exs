@@ -10,7 +10,7 @@ defmodule LzStringTest.Reference.Test do
   test "compress/1 should match output from the reference implementation for random strings", %{port: port} do
     Enum.each 1..2000, fn _ ->
       1000
-      |> :crypto.rand_bytes
+      |> :crypto.strong_rand_bytes
       |> Base.encode16
       |> assert_same_as_node_compress(port)
     end
@@ -29,7 +29,7 @@ defmodule LzStringTest.Reference.Test do
   test "decompress/1 should be able to decompress random strings from the reference implementation's compressToUint8Array/1", %{port: port} do
     Enum.each(1..2000, fn _ ->
       str = 1000
-      |> :crypto.rand_bytes
+      |> :crypto.strong_rand_bytes
       |> Base.encode16
 
       assert str == compress_to_binary_with_node(port, str) |> decompress
@@ -52,7 +52,7 @@ defmodule LzStringTest.Reference.Test do
   test "decompress_base64/1 should be able to decompress random strings from the reference implementation's compressToBase64/1", %{port: port} do
     Enum.each(1..2000, fn _ ->
       str = 1000
-      |> :crypto.rand_bytes
+      |> :crypto.strong_rand_bytes
       |> Base.encode16
 
       assert str == compress_to_base64_with_node(port, str) |> decompress_base64
@@ -69,7 +69,7 @@ defmodule LzStringTest.Reference.Test do
   test "the reference implementation's decompressFromBase64/1 should be able to random strings from compress_base64/1", %{port: port} do
     Enum.each(1..2000, fn _ ->
       str = 1000
-      |> :crypto.rand_bytes
+      |> :crypto.strong_rand_bytes
       |> Base.encode16
 
       assert str == compress_base64(str) |> decompress_base64_with_node(port)

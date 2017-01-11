@@ -5,7 +5,7 @@ defmodule LzString.Mixfile do
     [app: :lz_string,
      version: "0.0.6",
      elixir: "~> 1.2",
-     package: package,
+     package: package(),
      deps: deps(Mix.env),
      description: "Elixir implementation of pieroxy's lz-string compression algorithm."]
   end

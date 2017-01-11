@@ -28,12 +28,12 @@ defmodule TestHelper do
   end
 
   def random_string(size) do
-    Parallel.map(0..size, fn _ -> random_utf8_char end)
+    Parallel.map(0..size, fn _ -> random_utf8_char() end)
     |> :erlang.list_to_binary
   end
 
   def random_utf8_char do
-    << random_int_in_range :: utf8 >>
+    << random_int_in_range() :: utf8 >>
   end
 
   def random_int_in_range do
@@ -42,7 +42,7 @@ defmodule TestHelper do
     if int_in_range?(int) do
       int
     else
-      random_int_in_range
+      random_int_in_range()
     end
   end
 

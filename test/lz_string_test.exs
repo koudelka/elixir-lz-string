@@ -22,13 +22,13 @@ defmodule LzStringTest do
 
   test "roundtrip random large low entropy string" do
     1_000_000
-    |> :crypto.rand_bytes
+    |> :crypto.strong_rand_bytes
     |> Base.encode16
     |> assert_roundtrip
   end
 
   test "compress/1 should be able to handle every valid utf8 character that fits in two bytes" do
-    valid_utf8_char_ranges
+    valid_utf8_char_ranges()
     |> Enum.flat_map(fn range -> Enum.map(range, &(<< &1 :: utf8 >>)) end)
     |> :erlang.list_to_binary
     |> assert_roundtrip
