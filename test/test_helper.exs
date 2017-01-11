@@ -28,7 +28,7 @@ defmodule TestHelper do
   end
 
   def random_string(size) do
-    Parallel.map(0..size, fn _ -> random_utf8_char() end)
+    Enum.map(0..size, fn _ -> random_utf8_char() end)
     |> :erlang.list_to_binary
   end
 

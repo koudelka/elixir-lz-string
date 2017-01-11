@@ -6,7 +6,7 @@ defmodule LzString.Mixfile do
      version: "0.0.6",
      elixir: "~> 1.2",
      package: package(),
-     deps: deps(Mix.env),
+     deps: deps(),
      description: "Elixir implementation of pieroxy's lz-string compression algorithm."]
   end
 
@@ -26,13 +26,7 @@ defmodule LzString.Mixfile do
   #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
   #
   # Type "mix help deps" for more examples and options
-  defp deps(:test) do
-    [
-        {:parallel, github: "eproxus/parallel"}
-    ]
-  end
-
-  defp deps(_) do
+  defp deps() do
     []
   end
 
