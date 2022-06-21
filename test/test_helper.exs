@@ -77,6 +77,8 @@ defmodule TestHelper do
   def lz_string_node_port do
     port = Port.open({:spawn, "node -i"}, [:binary])
     repl_eval(port, "LZString = require('lz-string')")
+    # Clear buffer of output from require()
+    wait_for_result(port)
     port
   end
 
@@ -90,9 +92,9 @@ defmodule TestHelper do
     receive do
       {^port, {:data, "> "}} -> wait_for_result(port)
       {^port, {:data, "> " <> rest}} -> rest
-      {^port, {:data, result}} -> result |> String.replace_suffix("> ", "")
+      {^port, {:data, result}} -> result
     end
-    |> String.strip()
+    |> String.replace(~r/\s*\>?\s*$/, "")
   end
 end
 
