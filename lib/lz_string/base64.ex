@@ -1,6 +1,6 @@
 defmodule LZString.Base64 do
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
-  |> String.to_char_list()
+  |> String.to_charlist()
   |> Enum.with_index()
   |> Enum.each(fn {c, i} ->
     def base64_to_bitstring(unquote(c)), do: <<unquote(i)::size(6)>>
