@@ -1,5 +1,4 @@
 defmodule TestHelper do
-
   # chars in the "surrogate pair" range are invalid on their own
   @surrogate_pair_start "D800" |> :erlang.binary_to_integer(16) |> Kernel.-(1)
   @surrogate_pair_stop "DFFF" |> :erlang.binary_to_integer(16) |> Kernel.+(1)
@@ -29,11 +28,11 @@ defmodule TestHelper do
 
   def random_string(size) do
     Enum.map(0..size, fn _ -> random_utf8_char() end)
-    |> :erlang.list_to_binary
+    |> :erlang.list_to_binary()
   end
 
   def random_utf8_char do
-    << random_int_in_range() :: utf8 >>
+    <<random_int_in_range()::utf8>>
   end
 
   def random_int_in_range do
@@ -55,27 +54,31 @@ defmodule TestHelper do
 
   def compress_to_base64_with_node(port, str) do
     str = String.replace(str, "'", "\'")
+
     repl_eval(port, "LZString.compressToBase64('#{str}')")
-    |> String.strip(?') #'
+    |> String.trim("'")
   end
 
   def decompress_base64_with_node(str, port) do
     repl_eval(port, "LZString.decompressFromBase64('#{str}')")
-    |> String.strip(?') #'
+    |> String.trim("'")
   end
 
   def compress_to_binary_with_node(port, str) do
     str = String.replace(str, "'", "\'")
+
     repl_eval(port, "LZString.compressToUint8Array('#{str}').join(',')")
-    |> String.strip(?') #'
+    |> String.trim("'")
     |> String.split(",")
     |> Enum.map(&String.to_integer/1)
-    |> :erlang.list_to_binary
+    |> :erlang.list_to_binary()
   end
 
   def lz_string_node_port do
     port = Port.open({:spawn, "node -i"}, [:binary])
     repl_eval(port, "LZString = require('lz-string')")
+    # Clear buffer of output from require()
+    wait_for_result(port)
     port
   end
 
@@ -89,11 +92,10 @@ defmodule TestHelper do
     receive do
       {^port, {:data, "> "}} -> wait_for_result(port)
       {^port, {:data, "> " <> rest}} -> rest
-      {^port, {:data, result}} -> result |> String.replace_suffix("> ", "")
-    end |> String.strip
+      {^port, {:data, result}} -> result
+    end
+    |> String.replace(~r/\s*\>?\s*$/, "")
   end
-
 end
-
 
 ExUnit.start()

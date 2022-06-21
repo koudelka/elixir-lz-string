@@ -2,12 +2,14 @@ defmodule LzString.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :lz_string,
-     version: "0.0.7",
-     elixir: "~> 1.2",
-     package: package(),
-     deps: deps(),
-     description: "Elixir implementation of pieroxy's lz-string compression algorithm."]
+    [
+      app: :lz_string,
+      version: "0.0.7",
+      elixir: "~> 1.2",
+      package: package(),
+      deps: deps(),
+      description: "Elixir implementation of pieroxy's lz-string compression algorithm."
+    ]
   end
 
   # Configuration for the OTP application
@@ -31,8 +33,10 @@ defmodule LzString.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Michael Shapiro"],
-     licenses: ["MIT"],
-     links: %{"GitHub": "https://github.com/koudelka/elixir-lz-string"}]
+    [
+      maintainers: ["Michael Shapiro"],
+      licenses: ["MIT"],
+      links: %{GitHub: "https://github.com/koudelka/elixir-lz-string"}
+    ]
   end
 end
