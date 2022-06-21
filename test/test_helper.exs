@@ -56,19 +56,19 @@ defmodule TestHelper do
     str = String.replace(str, "'", "\'")
 
     repl_eval(port, "LZString.compressToBase64('#{str}')")
-    |> String.strip(?')
+    |> String.trim("'")
   end
 
   def decompress_base64_with_node(str, port) do
     repl_eval(port, "LZString.decompressFromBase64('#{str}')")
-    |> String.strip(?')
+    |> String.trim("'")
   end
 
   def compress_to_binary_with_node(port, str) do
     str = String.replace(str, "'", "\'")
 
     repl_eval(port, "LZString.compressToUint8Array('#{str}').join(',')")
-    |> String.strip(?')
+    |> String.trim("'")
     |> String.split(",")
     |> Enum.map(&String.to_integer/1)
     |> :erlang.list_to_binary()

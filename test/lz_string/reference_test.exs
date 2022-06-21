@@ -21,12 +21,12 @@ defmodule LzStringTest.Reference.Test do
   test "compress/1 should match output from the reference implementation for repeated ascii", %{
     port: port
   } do
-    Enum.each(1..2000, &assert_same_as_node_compress(String.ljust("", &1, ?a), port))
+    Enum.each(1..2000, &assert_same_as_node_compress(String.pad_trailing("", &1, "a"), port))
   end
 
   test "compress/1 should match output from the reference implementation for repeated multibyte char strings",
        %{port: port} do
-    Enum.each(1..2000, &assert_same_as_node_compress(String.ljust("", &1, ?猫), port))
+    Enum.each(1..2000, &assert_same_as_node_compress(String.pad_trailing("", &1, "猫"), port))
   end
 
   # compress using node, and decompress using elixir

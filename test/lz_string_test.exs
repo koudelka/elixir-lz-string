@@ -5,11 +5,11 @@ defmodule LzStringTest do
   doctest LZString
 
   test "roundtrip repeated single-bute strings" do
-    Enum.each(1..2000, &assert_roundtrip(String.ljust("", &1, ?a)))
+    Enum.each(1..2000, &assert_roundtrip(String.pad_trailing("", &1, "a")))
   end
 
   test "roundtrip repeated multi-byte char strings" do
-    Enum.each(1..2000, &assert_roundtrip(String.ljust("", &1, ?猫)))
+    Enum.each(1..2000, &assert_roundtrip(String.pad_trailing("", &1, "猫")))
   end
 
   test "roundtrip random high entropy strings" do
