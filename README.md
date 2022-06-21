@@ -22,7 +22,7 @@ Add lz_string to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:lz_string, "~> 0.0.7"}]
+  [{:lz_string, "~> 0.0.8"}]
 end
 ```
 
