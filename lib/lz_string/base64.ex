@@ -1,10 +1,9 @@
 defmodule LZString.Base64 do
-
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
-  |> String.to_char_list
-  |> Enum.with_index
+  |> String.to_char_list()
+  |> Enum.with_index()
   |> Enum.each(fn {c, i} ->
-    def base64_to_bitstring(unquote(c)), do: << unquote(i) :: size(6) >>
+    def base64_to_bitstring(unquote(c)), do: <<unquote(i)::size(6)>>
   end)
 
   defmacro __using__(_env) do
@@ -16,7 +15,7 @@ defmodule LZString.Base64 do
           "BYUwNmD2A0AECWsCGBbZtDUzkAA="
       """
       def compress_base64(str) do
-        str |> compress |> Base.encode64
+        str |> compress |> Base.encode64()
       end
 
       @doc ~S"""
@@ -29,7 +28,6 @@ defmodule LZString.Base64 do
         str |> decode_base64 |> decompress
       end
 
-
       @doc ~S"""
       Decodes the given "base64" string, giving a naked lz-string bitstring.
 
@@ -37,7 +35,7 @@ defmodule LZString.Base64 do
       <<5, 133, 48, 54, 96, 246, 3, 64, 4, 9, 107, 2, 24, 22, 217, 180, 53, 51, 144, 0, 0>>
       """
       def decode_base64(str) do
-        for << c :: utf8 <- str >>, into: <<>> do
+        for <<c::utf8 <- str>>, into: <<>> do
           LZString.Base64.base64_to_bitstring(c)
         end
       end
@@ -80,7 +78,6 @@ defmodule LZString.Base64 do
         |> String.replace("$", "=")
         |> decode_base64
       end
-
     end
   end
 end
